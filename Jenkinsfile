@@ -1,6 +1,10 @@
 pipeline { 
-    options { timestamps() } 
-
+    options { 
+        timestamps() 
+    } 
+    environment {
+        DOCKER_CREDS = credentials('tockenocker')
+    }
     agent none 
     stages {  
         stage('Check scm') {  
@@ -41,5 +45,14 @@ pipeline {
                 }  
             } // post 
         } // stage Test
+    
+        stage("Publish") {
+            agent any
+            steps {
+                sh 'echo $DOCKER_CREDS_PSW | docker login --username $DOCKER_CREDS_USR --password-stdin'
+                sh 'docker build -t ghto007/notes:latest .'
+                sh 'docker push ghto007/notes:latest'
+            } 
+        } // stage Publish
     } // stages
-}
+} // pipeline
