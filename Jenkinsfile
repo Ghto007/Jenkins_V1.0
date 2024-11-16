@@ -51,9 +51,10 @@ pipeline {
             steps {
                  script {
                     
-                    echo "Using Docker Username: $DOCKER_CREDS_USR"
-                     
-                sh 'docker login --username $DOCKER_CREDS_USR --password $DOCKER_CREDS_PSW'
+                echo "Using Docker Username: $DOCKER_CREDS_USR"
+                    
+                
+                sh 'echo $DOCKER_CREDS_PSW | docker login --username $DOCKER_CREDS_USR --password-stdin' 
                      
                 sh 'docker build -t ghto007/notes:latest .'
                 sh 'docker push ghto007/notes:latest'
